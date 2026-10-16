@@ -5,26 +5,30 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ดักจับทุก Request เพื่อดูว่าเกมยิงไปที่ Path ไหนบ้าง (เช็กได้ที่ Log ของ Render)
-app.use((req, res, next) => {
-    console.log(`[Incoming Request] ${req.method} ${req.url}`);
-    next();
+// ตัวอย่างการตอบกลับตาม Endpoint ที่เกมเรียกใช้งาน
+app.post('/live/player/authen', (req, res) => {
+    res.json({
+        status: "success",
+        code: 0,
+        data: { token: "mock_token_12345" }
+    });
 });
 
-app.get('/', (req, res) => {
-    res.send('Home Sweet Home Online Private Server is running!');
+app.post('/live/player/gameplay/checkversion', (req, res) => {
+    res.json({
+        status: "success",
+        code: 0,
+        data: { latestVersion: true }
+    });
 });
 
-// ปรับโครงสร้าง JSON ตอบกลับให้เกมยอมรับผ่าน
+// ค่าเผื่อสำหรับ Endpoint อื่นๆ ที่เกมอาจจะเรียก
 app.all('*', (req, res) => {
     res.json({
         status: "success",
         code: 0,
         message: "OK",
-        data: {
-            token: "mock_token_12345",
-            result: true
-        }
+        data: {}
     });
 });
 
